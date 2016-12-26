@@ -76,7 +76,7 @@ print (end - start)
 
 
 
-# # # Speech Interation # # #
+# # # Speech Interaction # # #
 while 1:
     raw_input('[User]: ')
     response = random.choice(PhraseDict.keys())
