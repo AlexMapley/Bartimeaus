@@ -5,6 +5,7 @@ import HTMLParser
 import urllib2
 import datetime
 import time
+import random
 
 #Create our word key dictionary
 keyDict = dict()
@@ -59,8 +60,8 @@ def recSpider(url, iterations, searchScope):
 #Start Time
 start = datetime.datetime.now()
 
-#Origin Point, http://null-byte.wonderhowto.com/
-recSpider("https://www.tutorialspoint.com/python/python_functions.htm", 0, 2)
+#Origin Point, github repository
+recSpider("https://github.com/AlexMapley/Bartimeaus/blob/master/Language.py", 0, 2)
 print PhraseDict
 
 #End Time
@@ -68,3 +69,15 @@ end = datetime.datetime.now()
 
 #StopWatch
 print (end - start)
+
+
+
+
+
+
+
+# # # Speech Interation # # #
+while 1:
+    raw_input('[User]: ')
+    response = random.choice(PhraseDict.keys())
+    print response
