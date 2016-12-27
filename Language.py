@@ -6,6 +6,7 @@ import urllib2
 import datetime
 import time
 import random
+import os
 
 #Create our word key dictionary
 keyDict = dict()
@@ -16,7 +17,7 @@ PhraseDict = dict()
 
 def recSpider(url, iterations, searchScope):
     if (iterations >= searchScope):
-        return
+        return url
     #Opens our url target, and copies contents
     try:
         response = urllib2.urlopen(url)
@@ -46,10 +47,18 @@ def recSpider(url, iterations, searchScope):
             statement = statement[2:]
             statement = statement.lower()
             PhraseDict[statement] = PhraseDict.get(statement,0) + 1
+            fragments = statement.split()
+            for word in fragments:
+                if re.match('^[\w-]+$', word):
+                    keyDict[word] = keyDict.get(word,0) + 1
         elif statement.startswith('title>'):
             statement = statement[6:]
             statement = statement.lower()
             PhraseDict[statement] = PhraseDict.get(statement,0) + 1
+            fragments = statement.split()
+            for word in fragments:
+                if re.match('^[\w-]+$', word):
+                    keyDict[word] = keyDict.get(word,0) + 1
 
 
 
@@ -63,6 +72,7 @@ start = datetime.datetime.now()
 #Origin Point, github repository
 recSpider("https://github.com/AlexMapley/Bartimeaus/blob/master/Language.py", 0, 2)
 print PhraseDict
+print keyDict
 
 #End Time
 end = datetime.datetime.now()
@@ -80,4 +90,6 @@ print (end - start)
 while 1:
     raw_input('[User]: ')
     response = random.choice(PhraseDict.keys())
+    #cmd = "say '" + response + "'"
     print response
+    #os.system(cmd)
