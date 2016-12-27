@@ -10,7 +10,7 @@ import os
 
 #Create our word key dictionary
 keyDict = dict()
-PhraseDict = dict()
+PhraseDict = { "dummyPhrase" : "dummyHead" }
 
 
 # # # RECURSIVE SEARCH # # #
@@ -27,7 +27,7 @@ def recSpider(url, iterations, searchScope):
     except:
         return
 
-
+    Header = ''
     for statement in list:
         if statement.startswith('a href'):
             #Find a new url target
@@ -43,18 +43,21 @@ def recSpider(url, iterations, searchScope):
             else:
                 pass
 
+        #Statement Learning
         elif statement.startswith('p>'):
             statement = statement[2:]
             statement = statement.lower()
-            PhraseDict[statement] = PhraseDict.get(statement,0) + 1
+            PhraseDict.update({statement : Header})
             fragments = statement.split()
             for word in fragments:
                 if re.match('^[\w-]+$', word):
                     keyDict[word] = keyDict.get(word,0) + 1
+
+        #Title Association
         elif statement.startswith('title>'):
             statement = statement[6:]
             statement = statement.lower()
-            PhraseDict[statement] = PhraseDict.get(statement,0) + 1
+            Header = statement
             fragments = statement.split()
             for word in fragments:
                 if re.match('^[\w-]+$', word):
