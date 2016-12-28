@@ -7,15 +7,19 @@ import datetime
 import time
 import random
 import os
+import collections
 
 #Create our word key dictionary
-keyDict = dict()
-PhraseDict = { "dummyPhrase" : "dummyHead" }
+
+ParaDict = { "dummyPhrase" : "dummyHead" }
+SentenceDict = dict()
+PhraseDict = dict()
+KeyDict = dict()
 
 
 # # # RECURSIVE SEARCH # # #
 
-def recSpider(url, iterations, searchScope):
+def Spider(url, iterations, searchScope):
     if (iterations >= searchScope):
         return url
     #Opens our url target, and copies contents
@@ -25,7 +29,7 @@ def recSpider(url, iterations, searchScope):
         #Splits page source by html closing tags
         list = page_source.split('<')
     except:
-        return
+        return3
 
     Header = ''
     for statement in list:
@@ -39,19 +43,30 @@ def recSpider(url, iterations, searchScope):
                 newUrl = newUrl.split(cutoff, 1)[0]
                 newUrl = newUrl[1:]
                 print newUrl
-                recSpider(newUrl, iterations+1, searchScope)
+                Spider(newUrl, iterations+1, searchScope)
             else:
                 pass
 
-        #Statement Learning
+# Paragraph Analysis:
+    # 4 Levels of data fragmenting/filtering
+    #Level 1: Paragraph Interanlization     : Learning critical thinking and thought organization
+    #Level 2: Sentence Internalization     : Learning to construct dialogue
+    #Level 3: Phrase Internalization      : Learning basic speech
+    #Level 4: Word Internalization       : Learning words
         elif statement.startswith('p>'):
             statement = statement[2:]
             statement = statement.lower()
-            PhraseDict.update({statement : Header})
-            fragments = statement.split()
-            for word in fragments:
-                if re.match('^[\w-]+$', word):
-                    keyDict[word] = keyDict.get(word,0) + 1
+            ParaDict.update({statement : Header})
+            Sentences = statement.split(".|!|?")
+            for sentence in Sentences:
+                SentenceDict[sentence] = SentenceDict.get(sentence,0) + 1
+                Phrases = sentence.split(";|,|:")
+                for phrase in Phrases:
+                    PhraseDict[phrase] = PhraseDict.get(phrase,0) + 1
+                    Keys = phrase.split()
+                    for word in Keys:
+                        if re.match('^[\w-]+$', word):
+                            KeyDict[word] = KeyDict.get(word,0) + 1
 
         #Title Association
         elif statement.startswith('title>'):
@@ -61,8 +76,7 @@ def recSpider(url, iterations, searchScope):
             fragments = statement.split()
             for word in fragments:
                 if re.match('^[\w-]+$', word):
-                    keyDict[word] = keyDict.get(word,0) + 1
-
+                    KeyDict[word] = KeyDict.get(word,0) + 1
 
 
 
@@ -73,17 +87,38 @@ def recSpider(url, iterations, searchScope):
 start = datetime.datetime.now()
 
 #Origin Point, github repository
-recSpider("https://github.com/AlexMapley/Bartimeaus/blob/master/Language.py", 0, 2)
-print PhraseDict
-print keyDict
+Spider("https://github.com/AlexMapley/Bartimeaus/blob/master/Language.py", 0, 2)
+
+
+
+# # # # Inneficient & Incomplete Dictionary Sorting # # # #
+    #Should be sending out raw data for later Sorting
+#Do this sorting in an R environment??
+#from collections import OrderedDict
+#SentenceDict = OrderedDict(sorted(SentenceDict.items(),
+#                                  key=lambda kv: kv[1]['K'], reverse=True))
+#PhraseDict = OrderedDict(sorted(PhraseDict.items(),
+#                                  key=lambda kv: kv[1]['K'], reverse=True))
+#KeyDict = OrderedDict(sorted(KeyDict.items(),
+#                                  key=lambda kv: kv[1]['K'], reverse=True))
+
+#Write Values to files
+def store_results(results, filename):
+    with open(filename, "w") as input_file:
+        for k, v in results.items():
+            line = '{} : {}'.format(k, v) + '\n'
+            input_file.write(line)
+store_results(ParaDict, "Paradict.txt")
+store_results(SentenceDict, "SentenceDict.txt")
+store_results(PhraseDict, "PhraseDict.txt")
+store_results(KeyDict, "KeyDict.txt")
+
 
 #End Time
 end = datetime.datetime.now()
 
 #StopWatch
 print (end - start)
-
-
 
 
 
