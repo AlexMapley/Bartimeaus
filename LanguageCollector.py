@@ -29,7 +29,7 @@ def Spider(url, iterations, searchScope):
         #Splits page source by html closing tags
         list = page_source.split('<')
     except:
-        return3
+        return
 
     Header = ''
     for statement in list:
@@ -57,10 +57,12 @@ def Spider(url, iterations, searchScope):
             statement = statement[2:]
             statement = statement.lower()
             ParaDict.update({statement : Header})
+            #Sentences = re.split('. |! |?  ', statement)
             Sentences = statement.split(".|!|?")
+            #Sentences = statement.replace(',',' ').replace('.',' ').replace('?',' ').split()
             for sentence in Sentences:
                 SentenceDict[sentence] = SentenceDict.get(sentence,0) + 1
-                Phrases = sentence.split(";|,|:")
+                Phrases = sentence.split(";|:")
                 for phrase in Phrases:
                     PhraseDict[phrase] = PhraseDict.get(phrase,0) + 1
                     Keys = phrase.split()
@@ -87,7 +89,7 @@ def Spider(url, iterations, searchScope):
 start = datetime.datetime.now()
 
 #Origin Point, github repository
-Spider("https://github.com/AlexMapley/Bartimeaus/blob/master/Language.py", 0, 2)
+Spider("https://github.com/AlexMapley/Bartimeaus/blob/master/LanguageCollector.py", 0, 3)
 
 
 
@@ -108,6 +110,7 @@ def store_results(results, filename):
         for k, v in results.items():
             line = '{} : {}'.format(k, v) + '\n'
             input_file.write(line)
+
 store_results(ParaDict, "Paradict.txt")
 store_results(SentenceDict, "SentenceDict.txt")
 store_results(PhraseDict, "PhraseDict.txt")
@@ -119,15 +122,3 @@ end = datetime.datetime.now()
 
 #StopWatch
 print (end - start)
-
-
-
-
-
-# # # Speech Interaction # # #
-while 1:
-    raw_input('[User]: ')
-    response = random.choice(PhraseDict.keys())
-    #cmd = "say '" + response + "'"
-    print response
-    #os.system(cmd)
