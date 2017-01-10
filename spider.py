@@ -41,18 +41,20 @@ def Spider(primeUrl, url, iterations, searchScope):
             #Find a new url target
             newUrl= statement[7:]
             if newUrl.startswith('"http'):
+                #print newUrl
                 cutoff = '">'
                 newUrl = newUrl.split(cutoff, 1)[0]
                 cutoff = '" '
                 newUrl = newUrl.split(cutoff, 1)[0]
                 newUrl = newUrl[1:]
-                if newUrl.startswith(primeUrl):
-                    if newUrl not in WebList:
-                        WebList.append(newUrl)
-                        print newUrl
-                        Spider(primeUrl, newUrl, iterations+1, searchScope)
-                    else:
-                        pass
+                print newUrl
+                #if newUrl.startswith(primeUrl):
+                if newUrl not in WebList:
+                    WebList.append(newUrl)
+                    print newUrl
+                    Spider(primeUrl, newUrl, iterations+1, searchScope)
+                else:
+                    pass
             else:
                 pass
 
