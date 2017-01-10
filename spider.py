@@ -20,10 +20,18 @@ PhraseDict = dict()
 KeyDict = dict()
 WebList = list()
 
+#Get my prime Url flag
+prime = sys.argv[1]
+if "www." not in prime:
+    div = prime.split('.')
+    prime = div[0]
+else:
+    div = prime.split('.')
+    prime = div[1]
 
 # # # RECURSIVE SEARCH # # #
 
-def Spider(primeUrl, url, iterations, searchScope):
+def Spider(prime, url, iterations, searchScope):
     if (iterations >= searchScope):
         return url
     #Opens our url target, and copies contents
@@ -41,20 +49,18 @@ def Spider(primeUrl, url, iterations, searchScope):
             #Find a new url target
             newUrl= statement[7:]
             if newUrl.startswith('"http'):
-                #print newUrl
                 cutoff = '">'
                 newUrl = newUrl.split(cutoff, 1)[0]
                 cutoff = '" '
                 newUrl = newUrl.split(cutoff, 1)[0]
                 newUrl = newUrl[1:]
-                print newUrl
-                #if newUrl.startswith(primeUrl):
-                if newUrl not in WebList:
-                    WebList.append(newUrl)
-                    print newUrl
-                    Spider(primeUrl, newUrl, iterations+1, searchScope)
-                else:
-                    pass
+                if prime in newUrl:
+                    if newUrl not in WebList:
+                       WebList.append(newUrl)
+                       print newUrl
+                       Spider(primeUrl, newUrl, iterations+1, searchScope)
+                    else:
+                        pass
             else:
                 pass
 
@@ -97,7 +103,7 @@ def Spider(primeUrl, url, iterations, searchScope):
 start = datetime.datetime.now()
 
 #Origin Point, github repository
-Spider(sys.argv[1], sys.argv[1], 0, sys.argv[2])
+Spider(prime, sys.argv[1], 0, sys.argv[2])
 
 
 #Write Values to files
