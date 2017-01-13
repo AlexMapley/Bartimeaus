@@ -2,7 +2,6 @@
 import sys
 import re
 import string
-import HTMLParser
 import urllib2
 import datetime
 import time
@@ -14,11 +13,25 @@ import os
 # Arg 2: Depth of Search
 #Create our word key dictionary
 
+# # # # # ARG Error Exceptions # # # # #
+if (len(sys.argv) < 3):
+    print "\n\nERROR: 2 arguments are required:\nThe starting http:// site,"
+    print "and an integer defining search depth (For testing, choose a low number <=2)\n\n"
+    sys.exit()
+
+if "http" not in sys.argv[1]:
+    print "\n\nERROR: It's required that your starting site begins with either"
+    print "http:// or https://"
+    print "That's just how the web parser syntax works\n\n"
+    sys.exit()
+
+# # # # Creating my Archinves # # # # #
 ParaDict = { "dummyPhrase" : "dummyHead" }
 SentenceDict = dict()
 PhraseDict = dict()
 KeyDict = dict()
 WebList = list()
+
 
 #Get my prime Url flag
 prime = sys.argv[1]
@@ -44,8 +57,12 @@ def Spider(prime, url, iterations, searchScope):
         return
 
     Header = ''
+
+    
     for statement in list:
+         
         if statement.startswith('a href'):
+            
             #Find a new url target
             newUrl= statement[7:]
             if newUrl.startswith('"http'):
@@ -58,7 +75,7 @@ def Spider(prime, url, iterations, searchScope):
                     if newUrl not in WebList:
                        WebList.append(newUrl)
                        print newUrl
-                       Spider(primeUrl, newUrl, iterations+1, searchScope)
+                       Spider(prime, newUrl, iterations+1, searchScope)
                     else:
                         pass
             else:
