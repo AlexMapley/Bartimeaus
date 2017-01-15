@@ -25,22 +25,22 @@ if "http" not in sys.argv[1]:
     print "That's just how the web parser syntax works\n\n"
     sys.exit()
 
-# # # # Creating my Archinves # # # # #
+
+# # # # Flag Arguments # # # #
+
+# # # # Creating my Archives # # # # #
 ParaDict = { "dummyPhrase" : "dummyHead" }
-SentenceDict = dict()
-PhraseDict = dict()
-KeyDict = dict()
 WebList = list()
 
 
 #Get my prime Url flag
 prime = sys.argv[1]
 if "www." not in prime:
-    div = prime.split('.')
-    prime = div[0]
-else:
-    div = prime.split('.')
+    div = prime.replace('//',' ').replace('.',' ').split()
     prime = div[1]
+else:
+    div = prime.replace('//',' ').replace('.',' ').split()
+    prime = div[2]
 
 # # # RECURSIVE SEARCH # # #
 
@@ -73,8 +73,8 @@ def Spider(prime, url, iterations, searchScope):
                 newUrl = newUrl[1:]
                 if prime in newUrl:
                     if newUrl not in WebList:
-                       WebList.append(newUrl)
                        print newUrl
+                       WebList.append(newUrl)
                        Spider(prime, newUrl, iterations+1, searchScope)
                     else:
                         pass
@@ -91,26 +91,12 @@ def Spider(prime, url, iterations, searchScope):
             statement = statement[2:]
             statement = statement.lower()
             ParaDict.update({statement : Header})
-            Sentences = statement.split(".|!|?")
-            for sentence in Sentences:
-                SentenceDict[sentence] = SentenceDict.get(sentence,0) + 1
-                Phrases = sentence.split(";|,|:")
-                for phrase in Phrases:
-                    PhraseDict[phrase] = PhraseDict.get(phrase,0) + 1
-                    Keys = phrase.split()
-                    for word in Keys:
-                        if re.match('^[\w-]+$', word):
-                            KeyDict[word] = KeyDict.get(word,0) + 1
 
 # <title> Analysis
         elif statement.startswith('title>'):
             statement = statement[6:]
             statement = statement.lower()
             Header = statement
-            fragments = statement.split()
-            for word in fragments:
-                if re.match('^[\w-]+$', word):
-                    KeyDict[word] = KeyDict.get(word,0) + 1
 
 
 
@@ -130,9 +116,6 @@ def store_results(results, filename):
             line = '{} : {}'.format(k, v) + '\n'
             input_file.write(line)
 store_results(ParaDict, "Paradict.txt")
-store_results(SentenceDict, "SentenceDict.txt")
-store_results(PhraseDict, "PhraseDict.txt")
-store_results(KeyDict, "KeyDict.txt")
 
 
 #End Time
